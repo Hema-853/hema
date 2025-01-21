@@ -1,0 +1,43 @@
+public function get_faculties_details($key) {
+    $this->db->select('*');
+    $this->db->from('staff');
+    $this->db->group_start();
+    $this->db->like('staffname', $key);
+    $this->db->or_like('staffid', $key);
+    $this->db->group_end();
+    
+   
+    $this->db->order_by('staffname');
+    $this->db->order_by('staffid');
+    
+    $query = $this->db->get();
+   
+   
+    if ($query->num_rows() == 0) {
+        $this->db->select('*');
+        $this->db->from('staff');
+        $this->db->like('staffid', '20200' . $key);
+        $this->db->order_by('staffid');
+        $query = $this->db->get();
+    }
+   
+    $table = array();
+    $i = 0;
+    $sno = 1;
+    
+    if ($query->num_rows() > 0) {
+        foreach ($query->result() as $row) {
+            $j = 0;
+            $table[$i][$j++] = $sno++;
+            $table[$i][$j++] = $row->staffid;
+            $table[$i][$j++] = $row->staffname;
+            $table[$i][$j++] = $row->dept;
+            $table[$i][$j++] = $row->desg;
+            $table[$i++][$j] = $row->email;
+			}
+        return array('result' => true, 'msg' => $table);
+		} 
+		else {
+        return array('result' => false, 'msg' => $table);
+    }
+ }
