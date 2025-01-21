@@ -1,0 +1,127 @@
+<?php
+$name = $this->session->userdata('name');
+ if ($this->session->userdata('is_staff')==true && $this->session->userdata('is_admin')==true) {
+     $role='Admin';
+ } elseif ($this->session->userdata('is_staff')==true && $this->session->userdata('is_sadmin')==true) {
+     $role='SAdmin';
+ } elseif ($this->session->userdata('is_staff')==true && $this->session->userdata('is_clerk')==true) {
+     $role='Clerk';
+ } elseif ($this->session->userdata('is_staff')==true) {
+     $role='Faculty';
+ }
+//var_dump($this->session);
+?>  <style>
+
+   .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  /* background-color:#1cb394 !important;*/
+   color: #000000 !important;
+  }
+
+  </style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<?php $this->load->view('header'); ?>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+  <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__shake" src="<?php echo base_url().'assets/images/logo.jpg'?>" alt="AdminLTELogo" height="60" width="60">
+  </div>
+  <!-- Navbar -->
+  <?php $this->load->view('topnavbar'); ?>
+  <!-- /.navbar -->
+  <!-- Main Sidebar Container -->
+  <?php $this->load->view('aside'); ?>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0"> Staff  Details</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active"> Staff Details</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+        <div class="row">
+        <div class="row">
+        <div class="row">
+         <label class="control-label col-md-2" for="key">Search</label>
+         <div class="col-md-10">
+          <input type="search" class="form-control input-sm" name="key" id="key">
+         </div>
+       </div><br>
+       <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Your Subject Details</h3>
+            </div>
+              <div class="card-body">
+				
+                <table id="staff" class="table table-bordered table-condensed table-hover tab">
+                <thead>
+                    <tr class="cell-blue">
+                        <th>S.No.</th>
+                        <th>Staff ID</th>
+                        <th>Staff Name</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                </table>
+             </div>
+      </div>
+      <!-- /.card -->
+      </div> <!--col-md-6-->
+      </div><!--row -->
+      </div>
+    </section>
+  </div>
+<?php $this->load->view('footer'); ?>
+    <script type="text/javascript">
+
+    var recordTable = $('#staff').dataTable({
+   "iDisplayLength": -1,
+    "columns": [null,null,{className: "text-left"},{className: "text-left"},{className: "text-left"},{className: "text-left"}]
+  });
+    $('#key').keyup(function(e){
+      e.preventDefault();
+      var key=$(this).val();
+      $.ajax({
+        type: 'post',
+        data:{'key':key},
+        url: "<?php echo base_url().'Admin/get_faculties_details'; ?>",
+        dataType: 'json',
+        success: function(data){
+          var s = data.msg;
+           recordTable.fnClearTable();
+          for(var i = 0; i < s.length; i++) {
+             recordTable.fnAddData([s[i][0], s[i][1], s[i][2], s[i][3], s[i][4], s[i][5]]);
+          } 
+        },
+        error: function(data) {
+          console.log(data.responseText);
+        }
+      });
+    });
+
+</script>
+</body>
+</html>
