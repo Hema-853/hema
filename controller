@@ -1,0 +1,13 @@
+public function staff_search(){
+	$this->load->view('admin/staff_search');
+}
+public function get_faculties_details(){
+	$this->form_validation->set_rules('key', 'Key Name', 'trim|required|xss_clean');
+if($this->form_validation->run()==FALSE){
+echo validation_errors();
+}else{
+	 $key=$this->input->post('key');
+	 $res=$this->AM->get_faculties_details($key);
+	echo json_encode($res);
+}
+}
